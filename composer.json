@@ -1,0 +1,19 @@
+{
+  "name": "jodyboucher/wp-widget-text",
+  "description": "The (j9r) Text widget is an enhanced version of the built-in WordPress Text widget.",
+  "license": "GPL-2.0+",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "Jody Boucher",
+      "email": "jody@jodyboucher.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/jodyboucher/wp-widget-text/issues"
+  },
+  "require": {
+    "php": ">= 5.3.0",
+    "composer/installers": "~1.0"
+  }
+}
