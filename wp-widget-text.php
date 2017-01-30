@@ -50,7 +50,7 @@ class TextWidget
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
 		parent::__construct( 'j9r_text', __( '(j9r) Text', 'j9r-text' ), $widget_ops, $control_ops );
-		load_plugin_textdomain( 'j9r-text', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		\load_plugin_textdomain( 'j9r-text', false, basename( dirname( __FILE__ ) ) . '/languages' );
 	}
 
 	/**
@@ -68,10 +68,10 @@ class TextWidget
 		 * @param array  $instance An array of the widget's settings.
 		 * @param mixed  $id_base  The widget ID.
 		 */
-		$title          = apply_filters( 'widget_title',
-		                                 empty( $instance['title'] ) ? '' : $instance['title'],
-		                                 $instance,
-		                                 $this->id_base
+		$title          = \apply_filters( 'widget_title',
+		                                  empty( $instance['title'] ) ? '' : $instance['title'],
+		                                  $instance,
+		                                  $this->id_base
 		);
 		$titleShow      = ! empty( $instance['titleShow'] );
 		$titleUrl       = empty( $instance['titleUrl'] ) ? '' : $instance['titleUrl'];
@@ -84,10 +84,10 @@ class TextWidget
 		 * @param array           $instance    Array of settings for the current widget.
 		 * @param \WP_Widget_Text $this        Current Text widget instance.
 		 */
-		$text              = apply_filters( 'widget_text',
-		                                    empty( $instance['text'] ) ? '' : $instance['text'],
-		                                    $instance,
-		                                    $this
+		$text              = \apply_filters( 'widget_text',
+		                                     empty( $instance['text'] ) ? '' : $instance['text'],
+		                                     $instance,
+		                                     $this
 		);
 		$textShowEmpty     = ! empty( $instance['textShowEmpty'] );
 		$textAddParagraphs = ! empty( $instance['textAddParagraphs'] );
@@ -107,7 +107,7 @@ class TextWidget
 		if ( ! empty( $text ) || $textShowEmpty ) {
 			$wrapperCss = empty( $textWrapCss ) ? '' : 'class="' . $textWrapCss . '"';
 			echo "<div $wrapperCss>";
-			echo $textAddParagraphs ? wpautop( $text ) : $text;
+			echo $textAddParagraphs ? \wpautop( $text ) : $text;
 			echo '</div>';
 		}
 
@@ -126,20 +126,20 @@ class TextWidget
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
-		$instance['title']          = sanitize_text_field( $new_instance['title'] );
+		$instance['title']          = \sanitize_text_field( $new_instance['title'] );
 		$instance['titleShow']      = isset( $new_instance['titleShow'] );
-		$instance['titleUrl']       = esc_url_raw( strip_tags( $new_instance['titleUrl'] ) );
+		$instance['titleUrl']       = \esc_url_raw( strip_tags( $new_instance['titleUrl'] ) );
 		$instance['titleNewWindow'] = isset( $new_instance['titleNewWindow'] );
 
-		if ( current_user_can( 'unfiltered_html' ) ) {
+		if ( \current_user_can( 'unfiltered_html' ) ) {
 			$instance['text'] = $new_instance['text'];
 		} else {
-			$instance['text'] = wp_filter_post_kses( $new_instance['text'] );
+			$instance['text'] = \wp_filter_post_kses( $new_instance['text'] );
 		}
 
 		$instance['textShowEmpty']     = isset( $new_instance['textShowEmpty'] );
 		$instance['textAddParagraphs'] = isset( $new_instance['textAddParagraphs'] );
-		$instance['textWrapCss']       = sanitize_text_field( $new_instance['textWrapCss'] );
+		$instance['textWrapCss']       = \sanitize_text_field( $new_instance['textWrapCss'] );
 
 		return $instance;
 	}
@@ -152,11 +152,11 @@ class TextWidget
 	 * @return string|void
 	 */
 	public function form( $instance ) {
-		$instance          = wp_parse_args( (array) $instance, $this->defaults );
+		$instance          = \wp_parse_args( (array) $instance, $this->defaults );
 		$title             = isset( $instance['title'] ) ? $instance['title'] : $this->defaults['title'];
 		$titleUrl          = isset( $instance['titleUrl'] ) ? $instance['titleUrl'] : $this->defaults['titleUrl'];
 		$titleShow         = isset( $instance['titleShow'] ) ? $instance['titleShow'] : $this->defaults['titleShow'];
-		$text              = format_to_edit( $instance['text'] );
+		$text              = \format_to_edit( $instance['text'] );
 		$titleNewWindow    = isset( $instance['titleNewWindow'] )
 			? $instance['titleNewWindow']
 			: $this->defaults['titleNewWindow'];
@@ -172,12 +172,12 @@ class TextWidget
 		?>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title', 'j9r-text' ); ?>:</label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php \_e( 'Title', 'j9r-text' ); ?>:</label>
             <input id="<?php echo $this->get_field_id( 'title' ); ?>"
                    name="<?php echo $this->get_field_name( 'title' ); ?>"
                    class="widefat"
                    type="text"
-                   value="<?php echo esc_attr( $title ); ?>"
+                   value="<?php echo \esc_attr( $title ); ?>"
             />
         </p>
         <p>
@@ -186,26 +186,26 @@ class TextWidget
                    type="checkbox" <?php checked( $titleShow ); ?>
             />
             <label for="<?php echo $this->get_field_id( 'titleShow' ); ?>">
-				<?php _e( 'Display the title', 'j9r-text' ); ?>
+				<?php \_e( 'Display the title', 'j9r-text' ); ?>
             </label>
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'titleUrl' ); ?>">
-				<?php _e( 'Title URL', 'j9r-text' ); ?>:
+				<?php \_e( 'Title URL', 'j9r-text' ); ?>:
             </label>
             <input id="<?php echo $this->get_field_id( 'titleUrl' ); ?>"
                    name="<?php echo $this->get_field_name( 'titleUrl' ); ?>"
                    class="widefat"
                    type="text"
-                   value="<?php echo esc_url( $titleUrl ); ?>"
+                   value="<?php echo \esc_url( $titleUrl ); ?>"
             />
         </p>
         <p>
             <input id="<?php echo $this->get_field_id( 'titleNewWindow' ); ?>"
                    name="<?php echo $this->get_field_name( 'titleNewWindow' ); ?>"
-                   type="checkbox" <?php checked( $titleNewWindow ); ?> />
+                   type="checkbox" <?php \checked( $titleNewWindow ); ?> />
             <label for="<?php echo $this->get_field_id( 'titleNewWindow' ); ?>">
-				<?php _e( 'Open the title URL in a new window', 'j9r-text' ); ?>
+				<?php \_e( 'Open the title URL in a new window', 'j9r-text' ); ?>
             </label>
         </p>
         <p>
@@ -215,34 +215,34 @@ class TextWidget
                       class="widefat"
                       rows="16"
                       cols="20">
-                <?php echo esc_textarea( $text ); ?>
+                <?php echo \esc_textarea( $text ); ?>
             </textarea>
         </p>
         <p>
             <input id="<?php echo $this->get_field_id( 'textShowEmpty' ); ?>"
                    name="<?php echo $this->get_field_name( 'textShowEmpty' ); ?>"
-                   type="checkbox" <?php checked( isset( $textShowEmpty ) ); ?> />
+                   type="checkbox" <?php \checked( isset( $textShowEmpty ) ); ?> />
             <label for="<?php echo $this->get_field_id( 'textShowEmpty' ); ?>">
-				<?php _e( 'Display widget when content is empty', 'j9r-text' ); ?>
+				<?php \_e( 'Display widget when content is empty', 'j9r-text' ); ?>
             </label>
         </p>
         <p>
             <input id="<?php echo $this->get_field_id( 'textAddParagraphs' ); ?>"
                    name="<?php echo $this->get_field_name( 'textAddParagraphs' ); ?>"
-                   type="checkbox" <?php checked( $textAddParagraphs ); ?> />
+                   type="checkbox" <?php \checked( $textAddParagraphs ); ?> />
             <label for="<?php echo $this->get_field_id( 'textAddParagraphs' ); ?>">
-				<?php _e( 'Automatically add paragraphs to the content', 'j9r-text' ); ?>
+				<?php \_e( 'Automatically add paragraphs to the content', 'j9r-text' ); ?>
             </label>
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'textWrapCss' ); ?>">
-                <?php _e( 'Wrapper Css', 'j9r-text' ); ?>:
+				<?php \_e( 'Wrapper Css', 'j9r-text' ); ?>:
             </label>
             <input id="<?php echo $this->get_field_id( 'textWrapCss' ); ?>"
                    name="<?php echo $this->get_field_name( 'textWrapCss' ); ?>"
                    class="widefat"
                    type="text"
-                   value="<?php echo esc_attr( $textWrapCss ); ?>"
+                   value="<?php echo \esc_attr( $textWrapCss ); ?>"
             />
         </p>
 		<?php
@@ -253,7 +253,7 @@ class TextWidget
  * Register the widget
  */
 function text_widget_init() {
-	register_widget( 'JodyBoucher\WordPress\Plugins\TextWidget' );
+	\register_widget( 'JodyBoucher\WordPress\Plugins\TextWidget' );
 }
 
-add_action( 'widgets_init', 'JodyBoucher\WordPress\Plugins\text_widget_init' );
+\add_action( 'widgets_init', 'JodyBoucher\WordPress\Plugins\text_widget_init' );
