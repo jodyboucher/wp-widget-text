@@ -13,7 +13,6 @@ use WP_Widget;
  * Plugin Name:  (j9r) Text Widget
  * Plugin URI:   https://github.com/jodyboucher/wp-widget-text
  * Description:  An enhanced version of the built-in text widget.
- * Version:      1.0.0
  * Author:       Jody Boucher
  * Author URI:   https://jodyboucher.com
  * License:      GPL-2.0+
