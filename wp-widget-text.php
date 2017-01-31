@@ -154,24 +154,14 @@ class TextWidget
 	 */
 	public function form( $instance ) {
 		$instance          = \wp_parse_args( (array) $instance, $this->defaults );
-		$title             = isset( $instance['title'] ) ? $instance['title'] : $this->defaults['title'];
-		$titleUrl          = isset( $instance['titleUrl'] ) ? $instance['titleUrl'] : $this->defaults['titleUrl'];
-		$titleShow         = isset( $instance['titleShow'] ) ? $instance['titleShow'] : $this->defaults['titleShow'];
-		$text              = isset( $instance['text'] )
-			? \format_to_edit( $instance['text'] )
-			: \format_to_edit( $this->defaults['text'] );
-		$titleNewWindow    = isset( $instance['titleNewWindow'] )
-			? $instance['titleNewWindow']
-			: $this->defaults['titleNewWindow'];
-		$textShowEmpty     = isset( $instance['textShowEmpty'] )
-			? $instance['textShowEmpty']
-			: $this->defaults['textShowEmpty'];
-		$textAddParagraphs = isset( $instance['textAddParagraphs'] )
-			? $instance['textAddParagraphs']
-			: $this->defaults['textAddParagraphs'];
-		$textWrapCss       = isset( $instance['textWrapCss'] )
-			? $instance['textWrapCss']
-			: $this->defaults['textWrapCss'];
+		$title             = $instance['title'];
+		$titleUrl          = $instance['titleUrl'];
+		$titleShow         = $instance['titleShow'];
+		$text              = $instance['text'];
+		$titleNewWindow    = $instance['titleNewWindow'];
+		$textShowEmpty     = $instance['textShowEmpty'];
+		$textAddParagraphs = $instance['textAddParagraphs'];
+		$textWrapCss       = $instance['textWrapCss'];
 		?>
 
         <p>
@@ -184,15 +174,6 @@ class TextWidget
             />
         </p>
         <p>
-            <input id="<?php echo $this->get_field_id( 'titleShow' ); ?>"
-                   name="<?php echo $this->get_field_name( 'titleShow' ); ?>"
-                   type="checkbox" <?php checked( $titleShow ); ?>
-            />
-            <label for="<?php echo $this->get_field_id( 'titleShow' ); ?>">
-				<?php \_e( 'Display the title', 'j9r-text' ); ?>
-            </label>
-        </p>
-        <p>
             <label for="<?php echo $this->get_field_id( 'titleUrl' ); ?>">
 				<?php \_e( 'Title URL', 'j9r-text' ); ?>:
             </label>
@@ -202,6 +183,15 @@ class TextWidget
                    type="text"
                    value="<?php echo \esc_url( $titleUrl ); ?>"
             />
+        </p>
+        <p>
+            <input id="<?php echo $this->get_field_id( 'titleShow' ); ?>"
+                   name="<?php echo $this->get_field_name( 'titleShow' ); ?>"
+                   type="checkbox" <?php checked( $titleShow ); ?>
+            />
+            <label for="<?php echo $this->get_field_id( 'titleShow' ); ?>">
+				<?php \_e( 'Display the title', 'j9r-text' ); ?>
+            </label>
         </p>
         <p>
             <input id="<?php echo $this->get_field_id( 'titleNewWindow' ); ?>"
@@ -217,14 +207,12 @@ class TextWidget
                       name="<?php echo $this->get_field_name( 'text' ); ?>"
                       class="widefat"
                       rows="16"
-                      cols="20">
-                <?php echo \esc_textarea( $text ); ?>
-            </textarea>
+                      cols="20"><?php echo \esc_textarea( $text ); ?></textarea>
         </p>
         <p>
             <input id="<?php echo $this->get_field_id( 'textShowEmpty' ); ?>"
                    name="<?php echo $this->get_field_name( 'textShowEmpty' ); ?>"
-                   type="checkbox" <?php \checked( isset( $textShowEmpty ) ); ?> />
+                   type="checkbox" <?php \checked( $textShowEmpty ); ?> />
             <label for="<?php echo $this->get_field_id( 'textShowEmpty' ); ?>">
 				<?php \_e( 'Display widget when content is empty', 'j9r-text' ); ?>
             </label>
