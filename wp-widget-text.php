@@ -39,6 +39,7 @@ class TextWidget
 			'titleShow'         => true,
 			'titleUrl'          => '',
 			'titleNewWindow'    => true,
+			'text'              => '',
 			'textShowEmpty'     => false,
 			'textAddParagraphs' => false,
 			'textWrapCss'       => 'textwidget'
@@ -69,12 +70,12 @@ class TextWidget
 		 * @param mixed  $id_base  The widget ID.
 		 */
 		$title          = \apply_filters( 'widget_title',
-		                                  empty( $instance['title'] ) ? '' : $instance['title'],
+		                                  empty( $instance['title'] ) ? $this->defaults['title'] : $instance['title'],
 		                                  $instance,
 		                                  $this->id_base
 		);
 		$titleShow      = ! empty( $instance['titleShow'] );
-		$titleUrl       = empty( $instance['titleUrl'] ) ? '' : $instance['titleUrl'];
+		$titleUrl       = empty( $instance['titleUrl'] ) ? $this->defaults['titleUrl'] : $instance['titleUrl'];
 		$titleNewWindow = ! empty( $instance['titleNewWindow'] );
 
 		/**
@@ -85,7 +86,7 @@ class TextWidget
 		 * @param \WP_Widget_Text $this        Current Text widget instance.
 		 */
 		$text              = \apply_filters( 'widget_text',
-		                                     empty( $instance['text'] ) ? '' : $instance['text'],
+		                                     empty( $instance['text'] ) ? $this->defaults['text'] : $instance['text'],
 		                                     $instance,
 		                                     $this
 		);
@@ -156,7 +157,9 @@ class TextWidget
 		$title             = isset( $instance['title'] ) ? $instance['title'] : $this->defaults['title'];
 		$titleUrl          = isset( $instance['titleUrl'] ) ? $instance['titleUrl'] : $this->defaults['titleUrl'];
 		$titleShow         = isset( $instance['titleShow'] ) ? $instance['titleShow'] : $this->defaults['titleShow'];
-		$text              = \format_to_edit( $instance['text'] );
+		$text              = isset( $instance['text'] )
+			? \format_to_edit( $instance['text'] )
+			: \format_to_edit( $this->defaults['text'] );
 		$titleNewWindow    = isset( $instance['titleNewWindow'] )
 			? $instance['titleNewWindow']
 			: $this->defaults['titleNewWindow'];
