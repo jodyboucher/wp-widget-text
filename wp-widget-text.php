@@ -85,11 +85,19 @@ class TextWidget
 		 * @param array           $instance    Array of settings for the current widget.
 		 * @param \WP_Widget_Text $this        Current Text widget instance.
 		 */
-		$text              = \apply_filters( 'widget_text',
-		                                     empty( $instance['text'] ) ? $this->defaults['text'] : $instance['text'],
-		                                     $instance,
-		                                     $this
+		$text = \apply_filters( 'widget_text',
+		                        empty( $instance['text'] ) ? $this->defaults['text'] : $instance['text'],
+		                        $instance,
+		                        $this
 		);
+		/**
+		 * Filters the content of the Text widget with j9r targeted filter.
+		 *
+		 * @param string          $widget_text The widget content.
+		 * @param array           $instance    Array of settings for the current widget.
+		 * @param \WP_Widget_Text $this        Current Text widget instance.
+		 */
+		$text              = \apply_filters( 'j9r_widget_text', $text, $instance, $this );
 		$textShowEmpty     = ! empty( $instance['textShowEmpty'] );
 		$textAddParagraphs = ! empty( $instance['textAddParagraphs'] );
 		$textWrapCss       = empty( $instance['textWrapCss'] ) ? '' : $instance['textWrapCss'];
@@ -248,3 +256,11 @@ function text_widget_init() {
 }
 
 \add_action( 'widgets_init', 'JodyBoucher\WordPress\Plugins\text_widget_init' );
+
+/**
+ * Make any <img> tags responsive.
+ *
+ * Adding a new filter (not using widget_text) to ensure filter only executes for this widget.
+ * <img> must contain class="wp-image-###" attachment ID to work. (i.e. <img class="wp-image-123" ... />
+ */
+\add_filter( 'j9r_widget_text', 'wp_make_content_images_responsive' );
