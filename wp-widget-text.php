@@ -258,9 +258,19 @@ function text_widget_init() {
 \add_action( 'widgets_init', 'JodyBoucher\WordPress\Plugins\text_widget_init' );
 
 /**
- * Make any <img> tags responsive.
+ * Make <img> tags responsive.
  *
- * Adding a new filter (not using widget_text) to ensure filter only executes for this widget.
  * <img> must contain class="wp-image-###" attachment ID to work. (i.e. <img class="wp-image-123" ... />
+ *
+ * @param string $content The text to search for <img> tags.
+ */
+function make_images_responsive( $content ) {
+	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+		\wp_make_content_images_responsive( $content );
+	}
+}
+
+/**
+ * Adding a new filter (not using widget_text) to ensure filter only executes for this widget.
  */
 \add_filter( 'j9r_widget_text', 'wp_make_content_images_responsive' );

@@ -15,6 +15,7 @@ The widget supports the following features for configuring the `Content`:
 * Allows entry of `Content` text
 * Allows entry of a CSS class or space separated classes to attach to the `<div>` wrapper of `Content`
 * Provides an option to automatically add paragraphs to `Content` (identical to built-in widget)
+* Runs `Content` through a filter to make `<img>` tags responsive (uses WordPress `wp_make_content_images_responsive` function).
 
 ## Installation
 1. Download the zip archive and extract the `wp-widget-text` folder
