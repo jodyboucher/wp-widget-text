@@ -10,6 +10,8 @@ The widget supports the following features for configuring the `Title`:
 * Provides an option to enable/disable rendering of `Title` to output
 * Allows entry of a URL to transform `Title` into a link
 * Provides an option to open `Title` in a new window/tab when selected
+* Provides an option to enable/disable rendering of default `Title` content wrap
+* Allows entry of custom before/after content
 
 The widget supports the following features for configuring the `Content`:
 * Allows entry of `Content` text

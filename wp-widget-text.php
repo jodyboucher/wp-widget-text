@@ -35,14 +35,17 @@ class TextWidget
 	 */
 	public function __construct() {
 		$this->defaults = array(
-			'title'             => '',
-			'titleShow'         => true,
-			'titleUrl'          => '',
-			'titleNewWindow'    => true,
-			'text'              => '',
-			'textShowEmpty'     => false,
-			'textAddParagraphs' => false,
-			'textWrapCss'       => 'textwidget'
+			'title'                   => '',
+			'titleShow'               => true,
+			'titleUrl'                => '',
+			'titleNewWindow'          => true,
+			'titleIncludeDefaultWrap' => true,
+			'titleBefore'             => '',
+			'titleAfter'              => '',
+			'text'                    => '',
+			'textShowEmpty'           => false,
+			'textAddParagraphs'       => false,
+			'textWrapCss'             => 'textwidget'
 		);
 
 		$widget_ops  = array(
@@ -69,14 +72,22 @@ class TextWidget
 		 * @param array  $instance An array of the widget's settings.
 		 * @param mixed  $id_base  The widget ID.
 		 */
-		$title          = \apply_filters( 'widget_title',
-		                                  empty( $instance['title'] ) ? $this->defaults['title'] : $instance['title'],
-		                                  $instance,
-		                                  $this->id_base
+		$title = \apply_filters( 'widget_title',
+		                         empty( $instance['title'] ) ? $this->defaults['title'] : $instance['title'],
+		                         $instance,
+		                         $this->id_base
 		);
-		$titleShow      = ! empty( $instance['titleShow'] );
-		$titleUrl       = empty( $instance['titleUrl'] ) ? $this->defaults['titleUrl'] : $instance['titleUrl'];
-		$titleNewWindow = ! empty( $instance['titleNewWindow'] );
+
+		$titleShow               = ! empty( $instance['titleShow'] );
+		$titleUrl                = empty( $instance['titleUrl'] ) ? $this->defaults['titleUrl'] : $instance['titleUrl'];
+		$titleNewWindow          = ! empty( $instance['titleNewWindow'] );
+		$titleIncludeDefaultWrap = ! empty( $instance['titleIncludeDefaultWrap'] );
+		$titleBefore             = empty( $instance['titleBefore'] )
+			? $this->defaults['titleBefore']
+			: $instance['titleBefore'];
+		$titleAfter              = empty( $instance['titleAfter'] )
+			? $this->defaults['titleAfter']
+			: $instance['titleAfter'];
 
 		/**
 		 * Filters the content of the Text widget.
@@ -104,13 +115,19 @@ class TextWidget
 
 		echo $args['before_widget'];
 		if ( ! empty( $title ) && $titleShow ) {
-			echo $args['before_title'];
+			if ( $titleIncludeDefaultWrap ) {
+				echo $args['before_title'];
+			}
+			echo $titleBefore;
 			if ( ! empty( $titleUrl ) ) {
 				$linkTarget = $titleNewWindow ? "target='_blank'" : '';
 				$title      = "<a href='$titleUrl' $linkTarget>$title</a>";
 			}
 			echo $title;
-			echo $args['after_title'];
+			echo $titleAfter;
+			if ( $titleIncludeDefaultWrap ) {
+				echo $args['after_title'];
+			}
 		}
 
 		if ( ! empty( $text ) || $textShowEmpty ) {
@@ -135,15 +152,20 @@ class TextWidget
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
-		$instance['title']          = \sanitize_text_field( $new_instance['title'] );
-		$instance['titleShow']      = isset( $new_instance['titleShow'] );
-		$instance['titleUrl']       = \esc_url_raw( strip_tags( $new_instance['titleUrl'] ) );
-		$instance['titleNewWindow'] = isset( $new_instance['titleNewWindow'] );
+		$instance['title']                   = \sanitize_text_field( $new_instance['title'] );
+		$instance['titleShow']               = isset( $new_instance['titleShow'] );
+		$instance['titleUrl']                = \esc_url_raw( strip_tags( $new_instance['titleUrl'] ) );
+		$instance['titleNewWindow']          = isset( $new_instance['titleNewWindow'] );
+		$instance['titleIncludeDefaultWrap'] = isset( $new_instance['titleIncludeDefaultWrap'] );
 
 		if ( \current_user_can( 'unfiltered_html' ) ) {
-			$instance['text'] = $new_instance['text'];
+			$instance['titleBefore'] = $new_instance['titleBefore'];
+			$instance['titleAfter']  = $new_instance['titleAfter'];
+			$instance['text']        = $new_instance['text'];
 		} else {
-			$instance['text'] = \wp_filter_post_kses( $new_instance['text'] );
+			$instance['titleBefore'] = \wp_filter_post_kses( $new_instance['titleBefore'] );
+			$instance['titleAfter']  = \wp_filter_post_kses( $new_instance['titleAfter'] );
+			$instance['text']        = \wp_filter_post_kses( $new_instance['text'] );
 		}
 
 		$instance['textShowEmpty']     = isset( $new_instance['textShowEmpty'] );
@@ -161,15 +183,18 @@ class TextWidget
 	 * @return string|void
 	 */
 	public function form( $instance ) {
-		$instance          = \wp_parse_args( (array) $instance, $this->defaults );
-		$title             = $instance['title'];
-		$titleUrl          = $instance['titleUrl'];
-		$titleShow         = $instance['titleShow'];
-		$text              = $instance['text'];
-		$titleNewWindow    = $instance['titleNewWindow'];
-		$textShowEmpty     = $instance['textShowEmpty'];
-		$textAddParagraphs = $instance['textAddParagraphs'];
-		$textWrapCss       = $instance['textWrapCss'];
+		$instance                = \wp_parse_args( (array) $instance, $this->defaults );
+		$title                   = $instance['title'];
+		$titleUrl                = $instance['titleUrl'];
+		$titleShow               = $instance['titleShow'];
+		$titleIncludeDefaultWrap = $instance['titleIncludeDefaultWrap'];
+		$titleBefore             = $instance['titleBefore'];
+		$titleAfter              = $instance['titleAfter'];
+		$text                    = $instance['text'];
+		$titleNewWindow          = $instance['titleNewWindow'];
+		$textShowEmpty           = $instance['textShowEmpty'];
+		$textAddParagraphs       = $instance['textAddParagraphs'];
+		$textWrapCss             = $instance['textWrapCss'];
 		?>
 
         <p>
@@ -208,6 +233,38 @@ class TextWidget
             <label for="<?php echo $this->get_field_id( 'titleNewWindow' ); ?>">
 				<?php \_e( 'Open the title URL in a new window', 'j9r-text' ); ?>
             </label>
+        </p>
+        <p>
+            <input id="<?php echo $this->get_field_id( 'titleIncludeDefaultWrap' ); ?>"
+                   name="<?php echo $this->get_field_name( 'titleIncludeDefaultWrap' ); ?>"
+                   type="checkbox" <?php \checked( $titleIncludeDefaultWrap ); ?> />
+            <label for="<?php echo $this->get_field_id( 'titleIncludeDefaultWrap' ); ?>">
+				<?php \_e( 'Wrap title with default content (renders outside any before/after title content entered below)',
+				           'j9r-text'
+				); ?>
+            </label>
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'titleBefore' ); ?>"><?php \_e( 'Before title content',
+			                                                                            'j9r-text'
+				); ?>:</label>
+            <input id="<?php echo $this->get_field_id( 'titleBefore' ); ?>"
+                   name="<?php echo $this->get_field_name( 'titleBefore' ); ?>"
+                   class="widefat"
+                   type="text"
+                   value="<?php echo \esc_attr( $titleBefore ); ?>"
+            />
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'titleAfter' ); ?>"><?php \_e( 'After title content',
+			                                                                           'j9r-text'
+				); ?>:</label>
+            <input id="<?php echo $this->get_field_id( 'titleAfter' ); ?>"
+                   name="<?php echo $this->get_field_name( 'titleAfter' ); ?>"
+                   class="widefat"
+                   type="text"
+                   value="<?php echo \esc_attr( $titleAfter ); ?>"
+            />
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'text' ); ?>"><?php _e( 'Content', 'j9r-text' ); ?>:</label>
